@@ -1,0 +1,12 @@
+# OS
+.DS_Store
+
+# Reference audio (voice clone source - never commit)
+videoplayback_trimmed.mp3
+
+# IDE
+.idea/
+.vscode/
+
+# Don't ignore sounds - they're the whole point
+# But keep placeholder files for empty dirs
