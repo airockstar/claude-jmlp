@@ -3,6 +3,8 @@
 # Usage: play-sound.sh <category>
 # Categories: idle, permission, error
 
+exec < /dev/null
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SOUNDS_DIR="$SCRIPT_DIR/../sounds"
 CATEGORY="${1:-idle}"
@@ -21,6 +23,9 @@ if [ ${#VALID[@]} -eq 0 ]; then
     exit 0
 fi
 
-# Pick a random file and play it in background
+# Pick a random file and play it detached
 PICK="${VALID[$RANDOM % ${#VALID[@]}]}"
-afplay "$PICK" &
+nohup afplay "$PICK" > /dev/null 2>&1 &
+disown
+
+exit 0
