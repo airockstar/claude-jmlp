@@ -16,9 +16,14 @@ Claude Code utilise un système de [hooks](https://docs.anthropic.com/en/docs/cl
 
 ## Prérequis
 
-- macOS (utilise `afplay` pour jouer les sons)
-- `jq` (installer avec `brew install jq`)
+- macOS, Linux ou Windows (WSL / Git Bash)
+- `python3`
 - [Claude Code](https://claude.ai/claude-code)
+
+Lecteurs audio supportés (détection automatique) :
+- **macOS** : `afplay`
+- **Linux** : `paplay`, `mpv`, `ffplay` ou `aplay`
+- **WSL / Git Bash** : PowerShell `SoundPlayer`
 
 ## Installation
 

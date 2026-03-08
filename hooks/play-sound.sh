@@ -2,6 +2,7 @@
 # Play a random sound from a category directory
 # Usage: play-sound.sh <category>
 # Categories: idle, permission, error
+# Supports: macOS, Linux, WSL, Git Bash (Windows)
 
 exec < /dev/null
 
@@ -22,7 +23,38 @@ if [ ${#VALID[@]} -eq 0 ]; then
 fi
 
 PICK="${VALID[$RANDOM % ${#VALID[@]}]}"
-afplay "$PICK" &
-disown
 
+play_windows() {
+    local win_path
+    win_path=$(wslpath -w "$1" 2>/dev/null || cygpath -w "$1" 2>/dev/null || echo "$1")
+    powershell.exe -c "
+        Add-Type -AssemblyName presentationCore
+        \$p = New-Object System.Windows.Media.MediaPlayer
+        \$p.Open('$win_path')
+        \$p.Play()
+        Start-Sleep -Seconds 5
+    " &
+}
+
+case "$(uname -s)" in
+    Darwin)
+        afplay "$PICK" &
+        ;;
+    Linux)
+        if grep -qi microsoft /proc/version 2>/dev/null; then
+            play_windows "$PICK"
+        elif command -v paplay &>/dev/null; then
+            paplay "$PICK" &
+        elif command -v mpv &>/dev/null; then
+            mpv --no-video --really-quiet "$PICK" &
+        elif command -v ffplay &>/dev/null; then
+            ffplay -nodisp -autoexit -loglevel quiet "$PICK" &
+        fi
+        ;;
+    MINGW*|MSYS*|CYGWIN*)
+        play_windows "$PICK"
+        ;;
+esac
+
+disown 2>/dev/null
 exit 0
