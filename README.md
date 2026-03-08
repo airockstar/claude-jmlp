@@ -81,6 +81,11 @@ Vous pouvez remplacer les sons ou en ajouter :
 | [`13_jen_suis_fier.mp3`](https://airockstar.github.io/claude-jmlp/#idle) | "Oui, et j'en suis FIER !" |
 | [`14_ca_ne_vous_regarde_pas.mp3`](https://airockstar.github.io/claude-jmlp/#idle) | "Ça ne vous regarde pas !" |
 | [`15_moi_vivant.mp3`](https://airockstar.github.io/claude-jmlp/#idle) | "Moi vivant, JAMAIS !" |
+| [`16_mon_personnel.mp3`](https://airockstar.github.io/claude-jmlp/#idle) | "Mon personnel" |
+| [`17_ebola.mp3`](https://airockstar.github.io/claude-jmlp/#idle) | "Ebola" |
+| [`18_communiste.mp3`](https://airockstar.github.io/claude-jmlp/#idle) | "Communiste" |
+| [`19_vin.mp3`](https://airockstar.github.io/claude-jmlp/#idle) | "Vin" |
+| [`20_gris.mp3`](https://airockstar.github.io/claude-jmlp/#idle) | "Gris" |
 
 ### Demande de permission
 

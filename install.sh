@@ -24,24 +24,21 @@ for category in idle permission error; do
 done
 echo ""
 
-# Check if jq is available
-if ! command -v jq &> /dev/null; then
-    echo "Error: jq is required. Install with: brew install jq"
+# Check if python3 is available
+if ! command -v python3 &> /dev/null; then
+    echo "Error: python3 is required."
     exit 1
 fi
 
-# Create settings file if it doesn't exist
-if [ ! -f "$SETTINGS_FILE" ]; then
-    mkdir -p "$(dirname "$SETTINGS_FILE")"
-    echo '{}' > "$SETTINGS_FILE"
-fi
+# Create settings dir if needed
+mkdir -p "$(dirname "$SETTINGS_FILE")"
 
-# Register hooks using Python for reliable JSON manipulation (inspired by peon-ping)
-python3 -c "
+# Register hooks using Python for reliable JSON manipulation
+SETTINGS_FILE="$SETTINGS_FILE" HOOK_SCRIPT="$HOOK_SCRIPT" python3 - <<'PYEOF'
 import json, os
 
-settings_path = '$SETTINGS_FILE'
-hook_cmd = '$HOOK_SCRIPT'
+settings_path = os.environ['SETTINGS_FILE']
+hook_cmd = os.environ['HOOK_SCRIPT']
 
 if os.path.exists(settings_path):
     with open(settings_path) as f:
@@ -51,11 +48,14 @@ else:
 
 hooks = settings.setdefault('hooks', {})
 
-# Notification hooks (async so they don't block Claude Code)
-notification_hooks = [
-    h for h in hooks.get('Notification', [])
-    if not any('play-sound.sh' in hk.get('command', '') for hk in h.get('hooks', []))
-]
+def clean_hooks(hook_list):
+    return [
+        h for h in hook_list
+        if not any('play-sound.sh' in hk.get('command', '') for hk in h.get('hooks', []))
+    ]
+
+# Notification hooks
+notification_hooks = clean_hooks(hooks.get('Notification', []))
 notification_hooks.append({
     'matcher': 'idle_prompt',
     'hooks': [{'type': 'command', 'command': hook_cmd + ' idle', 'timeout': 10}]
@@ -66,25 +66,20 @@ notification_hooks.append({
 })
 hooks['Notification'] = notification_hooks
 
-# Stop hook (task completed - async)
-stop_hooks = [
-    h for h in hooks.get('Stop', [])
-    if not any('play-sound.sh' in hk.get('command', '') for hk in h.get('hooks', []))
-]
+# Stop hook (task completed)
+stop_hooks = clean_hooks(hooks.get('Stop', []))
 stop_hooks.append({
     'matcher': '',
     'hooks': [{'type': 'command', 'command': hook_cmd + ' idle', 'timeout': 10}]
 })
 hooks['Stop'] = stop_hooks
 
-settings['hooks'] = hooks
-
 with open(settings_path, 'w') as f:
     json.dump(settings, f, indent=2)
     f.write('\n')
 
 print('Hooks registered: Notification (idle_prompt, permission_prompt), Stop')
-"
+PYEOF
 
 echo ""
 echo "Done! Hooks installed."
