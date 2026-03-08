@@ -4,6 +4,8 @@ Des sons de notification personnalisés pour [Claude Code](https://claude.ai/cla
 
 > Parce que chaque `git push` mérite un discours de meeting politique.
 
+**[Ecouter tous les sons](https://airockstar.github.io/claude-jmlp/)**
+
 ## Comment ça marche
 
 Claude Code utilise un système de [hooks](https://docs.anthropic.com/en/docs/claude-code/hooks) qui permet d'exécuter des commandes shell sur certains événements. Ce projet joue des phrases JMLP générées par IA sur deux événements :
@@ -23,7 +25,6 @@ Claude Code utilise un système de [hooks](https://docs.anthropic.com/en/docs/cl
 ```bash
 git clone https://github.com/airockstar/claude-jmlp.git
 cd claude-jmlp
-chmod +x install.sh
 ./install.sh
 ```
 
@@ -50,26 +51,9 @@ bash hooks/play-sound.sh error
 
 ## Générer vos propres sons
 
-Les sons inclus ont été générés avec [ElevenLabs](https://elevenlabs.io) (voice cloning). Vous pouvez régénérer les sons ou en ajouter :
+Vous pouvez remplacer les sons ou en ajouter :
 
-### Avec ElevenLabs (recommandé)
-
-1. Créez un compte [ElevenLabs](https://elevenlabs.io) (plan Starter, 5$/mois)
-2. Clonez une voix avec un extrait audio de référence
-3. Récupérez votre clé API et l'ID de la voix clonée
-4. Lancez le script de génération :
-
-```bash
-export ELEVENLABS_API_KEY="votre_cle"
-export ELEVENLABS_VOICE_ID="id_de_la_voix"
-./generate-sounds.sh
-```
-
-Le script génère les 28 clips automatiquement. Les fichiers existants ne sont pas écrasés (supprimez-les d'abord pour regénérer).
-
-### Manuellement
-
-1. Générez vos sons avec l'outil de votre choix
+1. Générez vos sons avec l'outil de voice cloning de votre choix
 2. Consultez `sounds/phrases.md` pour la liste complète des phrases
 3. Déposez les fichiers MP3 dans `sounds/idle/`, `sounds/permission/`, `sounds/error/`
 4. Lancez `./install.sh`
@@ -130,9 +114,10 @@ claude-jmlp/
 │   └── error/                  ← sons "erreur" (.mp3)
 ├── hooks/
 │   └── play-sound.sh           ← sélection aléatoire + lecture du son
-├── generate-sounds.sh          ← génération via API ElevenLabs
 ├── install.sh                  ← installe les hooks dans Claude Code
 ├── uninstall.sh                ← désinstalle les hooks
+├── docs/
+│   └── index.html              ← page de preview des sons
 └── README.md
 ```
 

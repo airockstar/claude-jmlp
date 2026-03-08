@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code JMLP — Pack Sonore Jean-Marie Le Pen</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #30363d;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #002395, #fff, #ED2939);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #8b949e;
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.3rem 0.8rem;
+            background: #1f2937;
+            border: 1px solid #30363d;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            color: #8b949e;
+        }
+
+        .category {
+            margin-bottom: 2.5rem;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #21262d;
+        }
+
+        .category-header h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .category-tag {
+            font-size: 0.75rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 1rem;
+            font-weight: 500;
+        }
+
+        .tag-idle { background: #0d4429; color: #3fb950; }
+        .tag-permission { background: #4a2800; color: #d29922; }
+        .tag-error { background: #4a0e0e; color: #f85149; }
+
+        .sound-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            background: #161b22;
+            border: 1px solid #21262d;
+            border-radius: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .sound-card:hover {
+            border-color: #388bfd;
+        }
+
+        .sound-number {
+            font-size: 0.8rem;
+            color: #484f58;
+            font-weight: 600;
+            min-width: 1.5rem;
+            text-align: center;
+        }
+
+        .sound-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .sound-phrase {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+
+        .sound-file {
+            font-size: 0.75rem;
+            color: #484f58;
+            font-family: 'SFMono-Regular', Consolas, monospace;
+        }
+
+        audio {
+            height: 32px;
+            min-width: 200px;
+        }
+
+        .install-section {
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+        }
+
+        .install-section h2 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .install-code {
+            background: #0d1117;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'SFMono-Regular', Consolas, monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            color: #79c0ff;
+        }
+
+        .install-code .comment { color: #484f58; }
+
+        footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #21262d;
+            text-align: center;
+            color: #484f58;
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: #388bfd;
+            text-decoration: none;
+        }
+
+        .play-all {
+            display: inline-block;
+            margin-bottom: 1rem;
+            padding: 0.4rem 1rem;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #e6edf3;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .play-all:hover {
+            background: #30363d;
+        }
+
+        @media (max-width: 600px) {
+            .sound-card {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+            audio {
+                width: 100%;
+                min-width: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Claude Code JMLP</h1>
+            <p class="subtitle">Parce que chaque git push merite un discours de meeting politique.</p>
+            <span class="badge">28 clips &middot; Voice Clone &middot; macOS</span>
+        </header>
+
+        <div class="category">
+            <div class="category-header">
+                <h2>Tache terminee</h2>
+                <span class="category-tag tag-idle">idle_prompt</span>
+            </div>
+            <div id="idle-sounds"></div>
+        </div>
+
+        <div class="category">
+            <div class="category-header">
+                <h2>Demande de permission</h2>
+                <span class="category-tag tag-permission">permission_prompt</span>
+            </div>
+            <div id="permission-sounds"></div>
+        </div>
+
+        <div class="category">
+            <div class="category-header">
+                <h2>Erreurs</h2>
+                <span class="category-tag tag-error">error</span>
+            </div>
+            <div id="error-sounds"></div>
+        </div>
+
+        <div class="install-section">
+            <h2>Installation</h2>
+            <div class="install-code">
+                <span class="comment"># Cloner le repo</span><br>
+                git clone https://github.com/airockstar/claude-jmlp.git<br>
+                cd claude-jmlp<br><br>
+                <span class="comment"># Installer les hooks</span><br>
+                ./install.sh
+            </div>
+        </div>
+
+        <footer>
+            <p>
+                <a href="https://github.com/airockstar/claude-jmlp">GitHub</a>
+                &middot; Licence MIT &middot; Faites ce que vous voulez, COMME D'HABITUDE !
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://github.com/airockstar/claude-jmlp/raw/main/sounds';
+
+        const sounds = {
+            idle: [
+                { file: '01_impossible.mp3', phrase: 'Ils disaient que c\'etait impossible, ils avaient tort, COMME D\'HABITUDE !' },
+                { file: '02_moi_jagis.mp3', phrase: 'Pendant que les autres parlent, MOI, j\'agis !' },
+                { file: '03_sous_estime.mp3', phrase: 'On m\'a sous-estime, ENCORE UNE FOIS, et j\'ai reussi !' },
+                { file: '04_le_genie.mp3', phrase: 'Le genie, voyez-vous, ca ne s\'explique pas !' },
+                { file: '05_le_rouquin.mp3', phrase: 'Je vais te faire courir, le rouquin !' },
+                { file: '06_encore_plus_rapide.mp3', phrase: 'La prochaine fois, ce sera ENCORE plus rapide !' },
+                { file: '07_pas_dans_le_detail.mp3', phrase: 'Moi Monsieur, je ne fais pas dans le detail... quoique !' },
+                { file: '08_bon_sens.mp3', phrase: 'C\'est une victoire du BON SENS !' },
+                { file: '09_vous_allez_voir.mp3', phrase: 'Vous allez voir ce que vous allez voir !' },
+                { file: '10_le_seul.mp3', phrase: 'Je suis le SEUL a dire la verite !' },
+                { file: '11_on_est_chez_nous.mp3', phrase: 'On est chez nous !' },
+                { file: '12_tout_haut.mp3', phrase: 'Je dis tout haut ce que les gens pensent tout bas !' },
+                { file: '13_jen_suis_fier.mp3', phrase: 'Oui, et j\'en suis FIER !' },
+                { file: '14_ca_ne_vous_regarde_pas.mp3', phrase: 'Ca ne vous regarde pas !' },
+                { file: '15_moi_vivant.mp3', phrase: 'Moi vivant, JAMAIS !' },
+            ],
+            permission: [
+                { file: '01_jeanne.mp3', phrase: 'JEANNE, AU SECOURS !' },
+                { file: '02_scandale.mp3', phrase: 'ON M\'EMPECHE DE TRAVAILLER, c\'est un SCANDALE !' },
+                { file: '03_complot.mp3', phrase: 'C\'est un COMPLOT pour m\'empecher d\'avancer !' },
+                { file: '04_faire_taire.mp3', phrase: 'On veut me faire taire, MAIS JE NE ME TAIRAI PAS !' },
+                { file: '05_atteinte.mp3', phrase: 'C\'est une ATTEINTE a ma liberte !' },
+                { file: '06_pas_le_droit.mp3', phrase: 'Vous n\'avez PAS LE DROIT de me bloquer !' },
+                { file: '07_censure.mp3', phrase: 'La CENSURE, encore et toujours !' },
+                { file: '08_la_parole.mp3', phrase: 'JE DEMANDE LA PAROLE, c\'est mon DROIT !' },
+            ],
+            error: [
+                { file: '01_un_detail.mp3', phrase: 'C\'est un detail... un DETAIL !' },
+                { file: '02_tres_mal.mp3', phrase: 'Tout va TRES mal dans ce pays !' },
+                { file: '03_en_danger.mp3', phrase: 'La France est en DANGER !' },
+                { file: '04_decadence.mp3', phrase: 'C\'est la DECADENCE !' },
+                { file: '05_durafour.mp3', phrase: 'Durafour... crematoire !' },
+            ]
+        };
+
+        function createCard(category, sound, index) {
+            const url = `${BASE_URL}/${category}/${sound.file}`;
+            return `
+                <div class="sound-card">
+                    <span class="sound-number">${index + 1}</span>
+                    <div class="sound-info">
+                        <div class="sound-phrase">${sound.phrase}</div>
+                        <div class="sound-file">${sound.file}</div>
+                    </div>
+                    <audio controls preload="none" src="${url}"></audio>
+                </div>
+            `;
+        }
+
+        for (const [category, list] of Object.entries(sounds)) {
+            const container = document.getElementById(`${category}-sounds`);
+            container.innerHTML = list.map((s, i) => createCard(category, s, i)).join('');
+        }
+    </script>
+</body>
+</html>
