@@ -36,30 +36,59 @@ if [ ! -f "$SETTINGS_FILE" ]; then
     echo '{}' > "$SETTINGS_FILE"
 fi
 
-# Build the hooks config
-HOOKS_JSON=$(cat <<EOF
-{
-  "hooks": {
-    "Notification": [
-      {
-        "matcher": "idle_prompt",
-        "hooks": [{"type": "command", "command": "$HOOK_SCRIPT idle"}]
-      },
-      {
-        "matcher": "permission_prompt",
-        "hooks": [{"type": "command", "command": "$HOOK_SCRIPT permission"}]
-      }
-    ]
-  }
-}
-EOF
-)
+# Register hooks using Python for reliable JSON manipulation (inspired by peon-ping)
+python3 -c "
+import json, os
 
-# Merge into existing settings
-MERGED=$(jq -s '.[0] * .[1]' "$SETTINGS_FILE" <(echo "$HOOKS_JSON"))
-echo "$MERGED" > "$SETTINGS_FILE"
+settings_path = '$SETTINGS_FILE'
+hook_cmd = '$HOOK_SCRIPT'
 
+if os.path.exists(settings_path):
+    with open(settings_path) as f:
+        settings = json.load(f)
+else:
+    settings = {}
+
+hooks = settings.setdefault('hooks', {})
+
+# Notification hooks (async so they don't block Claude Code)
+notification_hooks = [
+    h for h in hooks.get('Notification', [])
+    if not any('play-sound.sh' in hk.get('command', '') for hk in h.get('hooks', []))
+]
+notification_hooks.append({
+    'matcher': 'idle_prompt',
+    'hooks': [{'type': 'command', 'command': hook_cmd + ' idle', 'timeout': 10}]
+})
+notification_hooks.append({
+    'matcher': 'permission_prompt',
+    'hooks': [{'type': 'command', 'command': hook_cmd + ' permission', 'timeout': 10}]
+})
+hooks['Notification'] = notification_hooks
+
+# Stop hook (task completed - async)
+stop_hooks = [
+    h for h in hooks.get('Stop', [])
+    if not any('play-sound.sh' in hk.get('command', '') for hk in h.get('hooks', []))
+]
+stop_hooks.append({
+    'matcher': '',
+    'hooks': [{'type': 'command', 'command': hook_cmd + ' idle', 'timeout': 10}]
+})
+hooks['Stop'] = stop_hooks
+
+settings['hooks'] = hooks
+
+with open(settings_path, 'w') as f:
+    json.dump(settings, f, indent=2)
+    f.write('\n')
+
+print('Hooks registered: Notification (idle_prompt, permission_prompt), Stop')
+"
+
+echo ""
 echo "Done! Hooks installed."
 echo ""
+echo "Restart Claude Code for hooks to take effect."
 echo "Test with: bash $HOOK_SCRIPT idle"
 echo "Uninstall: run ./uninstall.sh"
